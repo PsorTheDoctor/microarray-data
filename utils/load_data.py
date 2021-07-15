@@ -63,8 +63,8 @@ def load_data(path='/data/'):
 
   # Przetasowanie elementów
   indices = np.arange(1057)
-  X_shuffled = tf.gather(X_reshaped, indices)
-  y_shuffled = tf.gather(y, indices)
+  X_shuffled = np.array(tf.gather(X_reshaped, indices))
+  y_shuffled = np.array(tf.gather(y, indices))
 
   # Podział na zbiór treningowy i testowy
   X_train = X_shuffled[:857]
