@@ -7,7 +7,7 @@ from scipy.io import arff
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_data(path='/content/'):
+def load_data(path='/data/'):
   """
   Funkcja działa analogicznie do load_data zbioru MNIST.
   Zwraca (X_train, y_train), (X_test, y_test) o wymiarach:
