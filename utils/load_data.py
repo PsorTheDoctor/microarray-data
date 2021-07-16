@@ -7,14 +7,14 @@ from scipy.io import arff
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_data(path='/data/'):
+def load_data(path='/content/microarray-data/data/'):
   """
   Funkcja działa analogicznie do load_data zbioru MNIST.
   Zwraca (X_train, y_train), (X_test, y_test) o wymiarach:
-  (857, 20, 50)
-  (857,)
-  (200, 20, 50)
-  (200,)
+  (900, 20, 50)
+  (900,)
+  (157, 20, 50)
+  (157,)
 
   Dla potrzeb wizualizacji każdy gen przyjmuje wymiary prostokąta 20 x 50.
   """
@@ -22,10 +22,11 @@ def load_data(path='/data/'):
 
   # Załadowanie danych
   for filename in os.listdir(path):
-    if os.path.isfile(os.path.join(path, filename)):
+    full_path = os.path.join(path, filename)
 
+    if os.path.isfile(full_path):
       if filename[-5:] == '.arff':
-        microarray, _ = arff.loadarff(filename)
+        microarray, _ = arff.loadarff(full_path)
         microarrays.append(microarray)
 
   # Konkatenacja danych z plików do jednej listy o długości 1057
@@ -63,13 +64,13 @@ def load_data(path='/data/'):
 
   # Przetasowanie elementów
   indices = np.arange(1057)
-  X_shuffled = np.array(tf.gather(X_reshaped, indices))
-  y_shuffled = np.array(tf.gather(y, indices))
+  X_shuffled = tf.gather(X_reshaped, indices)
+  y_shuffled = tf.gather(y, indices)
 
   # Podział na zbiór treningowy i testowy
-  X_train = X_shuffled[:857]
-  X_test = X_shuffled[-200:]
-  y_train = y_shuffled[:857]
-  y_test = y_shuffled[-200:]
+  X_train = X_shuffled[:900]
+  X_test = X_shuffled[-157:]
+  y_train = y_shuffled[:900]
+  y_test = y_shuffled[-157:]
 
   return (X_train, y_train), (X_test, y_test)
