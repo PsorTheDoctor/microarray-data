@@ -65,15 +65,15 @@ def augment(images, labels, method, samples_per_input=1):
 
   assert images.shape[0] == labels.shape[0]
   dataset_length = images.shape[0]
-  w = images.shape[1]
-  h = images.shape[2]
+  h = images.shape[1]
+  w = images.shape[2]
 
   X_aug = []  # np.array((dataset_length * samples_per_input, w, h))
   y_aug = []  # np.array(dataset_length * samples_per_input)
 
   # Ustawienie szerokości i wysokości łaty dla cutout i cutmix na pół obrazka
-  patch_w = int(images.shape[1] / 2)
-  patch_h = int(images.shape[2] / 2)
+  patch_h = int(images.shape[1] / 2)
+  patch_w = int(images.shape[2] / 2)
 
   for _ in range(samples_per_input):
     for i in range(dataset_length):
