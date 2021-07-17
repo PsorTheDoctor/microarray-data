@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import os
 from scipy.io import arff
@@ -11,12 +10,12 @@ def load_data(path='/content/microarray-data/data/'):
   """
   Funkcja działa analogicznie do load_data zbioru MNIST.
   Zwraca (X_train, y_train), (X_test, y_test) o wymiarach:
-  (900, 20, 50)
+  (900, 32, 32)
   (900,)
-  (157, 20, 50)
+  (157, 32, 32)
   (157,)
 
-  Dla potrzeb wizualizacji każdy gen przyjmuje wymiary prostokąta 20 x 50.
+  Dla potrzeb wizualizacji każdy gen przyjmuje wymiary kwadratu 32 x 32.
   """
   microarrays = []
 
@@ -40,7 +39,7 @@ def load_data(path='/content/microarray-data/data/'):
 
   # Zamiana listy data na macierze numpy
   X_flatten = np.zeros((patients, genes))
-  X_reshaped = np.zeros((patients, 20, 50))
+  X_reshaped = np.zeros((patients, 32, 32))
   y = np.zeros(patients)
 
   for i in range(patients):
@@ -51,10 +50,13 @@ def load_data(path='/content/microarray-data/data/'):
     df = pd.DataFrame(X_flatten[i])
     x = df.select_dtypes(include=[np.number])
     scaler = MinMaxScaler(feature_range=(0, 1))
-    x_norm = scaler.fit_transform(x)
+    x = scaler.fit_transform(x)
 
-    # Zmiana kształtu genu na 20 x 50
-    X_reshaped[i] = np.reshape(x_norm, (20, 50))
+    # Dostawienie zer, aby długość genomu była równa 1024
+    x = np.concatenate((x, np.zeros(24)))
+
+    # Zmiana kształtu genu na 32 x 32
+    X_reshaped[i] = np.reshape(x, (32, 32))
 
     # Zastąpienie etykiet wartościami logicznymi
     if str(data[i][1000]) == "b'yes'":
@@ -64,14 +66,14 @@ def load_data(path='/content/microarray-data/data/'):
 
   # Przetasowanie elementów
   indices = np.arange(1057)
-  X_shuffled = tf.gather(X_reshaped, indices)
-  y_shuffled = tf.gather(y, indices)
+  X = tf.gather(X_reshaped, indices)
+  y = tf.gather(y, indices)
 
   # Podział na zbiór treningowy i testowy
-  X_train = X_shuffled[:900]
-  X_test = X_shuffled[-157:]
-  y_train = y_shuffled[:900]
-  y_test = y_shuffled[-157:]
+  X_train = X[:857]
+  X_test = X[-200:]
+  y_train = y[:857]
+  y_test = y[-200:]
 
   return (X_train, y_train), (X_test, y_test)
 
@@ -80,8 +82,8 @@ def load_data(path='/content/microarray-data/data/'):
 def load_data_by_label(label, path='/content/microarray-data/data/'):
   """
   Zwraca (X_train, X_test) o wymiarach:
-  (n, 20, 50)
-  (n, 20, 50)
+  (n, 32, 32)
+  (n, 32, 32)
   Gdzie n jest liczbą przypadków oznaczonych daną etykietą.
   """
   (X_train, y_train), (X_test, y_test) = load_data(path)
