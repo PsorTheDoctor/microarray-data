@@ -15,3 +15,5 @@ Improved Regularization of Convolutional Neural Networks with Cutout: https://ar
 CutMix: Regularization Strategy to Train Strong Classifierswith Localizable Features: https://arxiv.org/pdf/1905.04899v1.pdf
 
 mixup: Beyond Empirical Risk Minimization: https://arxiv.org/pdf/1710.09412v2.pdf
+
+Conditional Image Generation withPixelCNN Decoders: https://arxiv.org/pdf/1606.05328.pdf
