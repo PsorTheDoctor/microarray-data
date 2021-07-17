@@ -71,10 +71,10 @@ def load_data(path='/content/microarray-data/data/'):
   y = tf.gather(y, indices)
 
   # Podział na zbiór treningowy i testowy
-  X_train = X[:857]
-  X_test = X[-200:]
-  y_train = y[:857]
-  y_test = y[-200:]
+  X_train = X[:900]
+  X_test = X[-157:]
+  y_train = y[:900]
+  y_test = y[-157:]
 
   return (X_train, y_train), (X_test, y_test)
 
