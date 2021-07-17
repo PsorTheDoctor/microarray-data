@@ -74,3 +74,33 @@ def load_data(path='/content/microarray-data/data/'):
   y_test = y_shuffled[-157:]
 
   return (X_train, y_train), (X_test, y_test)
+
+
+# Do użycia podczas trenowania GANów i sieci niewymagających etykiet
+def load_data_by_label(label, path='/content/microarray-data/data/'):
+  """
+  Zwraca (X_train, X_test) o wymiarach:
+  (n, 20, 50)
+  (n, 20, 50)
+  Gdzie n jest liczbą przypadków oznaczonych daną etykietą.
+  """
+  (X_train, y_train), (X_test, y_test) = load_data(path)
+
+  assert X_train.shape[0] == y_train.shape[0]
+  assert X_test.shape[0] == y_test.shape[0]
+  assert label == 0 or label == 1
+
+  X_pos_train = []
+  for i in range(X_train.shape[0]):
+    if y_train[i] == label:
+      X_pos_train.append(X_train[i])
+
+  X_pos_test = []
+  for i in range(X_test.shape[0]):
+    if y_test[i] == label:
+      X_pos_test.append(X_test[i])
+
+  X_pos_train = np.array(X_pos_train)
+  X_pos_test = np.array(X_pos_test)
+
+  return X_pos_train, X_pos_test
