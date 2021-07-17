@@ -7,7 +7,7 @@ To use it please run:
 
 Examples of using a data loader and augmentation methods are shown in this notebook:
 
-https://github.com/PsorTheDoctor/microarray-data/blob/main/augmentation/microarrays_augmentation.ipynb
+https://github.com/PsorTheDoctor/microarray-data/blob/main/notebooks/microarray_augmentation.ipynb
 
 ## References:
 Improved Regularization of Convolutional Neural Networks with Cutout: https://arxiv.org/pdf/1708.04552.pdf
