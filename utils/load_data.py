@@ -53,7 +53,8 @@ def load_data(path='/content/microarray-data/data/'):
     x = scaler.fit_transform(x)
 
     # Dostawienie zer, aby długość genomu była równa 1024
-    x = np.concatenate((x, np.zeros(24)))
+    # I zmiana wymiaru x z (1000, 1) na 1000
+    x = np.concatenate((np.reshape(x, 1000), np.zeros(24)))
 
     # Zmiana kształtu genu na 32 x 32
     X_reshaped[i] = np.reshape(x, (32, 32))
