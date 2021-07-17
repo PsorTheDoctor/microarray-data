@@ -47,8 +47,8 @@ def cutmix(img1, img2, n_patches=1, patch_width=16, patch_height=16):
 
 
 def mixup(img1, label1, img2, label2, alpha=0.2):
-  label1 = tf.one_hot(label1, 10)
-  label2 = tf.one_hot(label2, 10)
+  # label1 = tf.one_hot(label1, 10)
+  # label2 = tf.one_hot(label2, 10)
 
   # Lambda spróbkowana z rozkładu beta
   # Zwiększone prawdopodobieństwo wylosowania wartości
