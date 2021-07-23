@@ -6,7 +6,7 @@ from scipy.io import arff
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_data(path='/content/microarray-data/data/'):
+def load_data(path='/content/microarray-data/data/', shuffle=False):
   """
   Funkcja działa analogicznie do load_data zbioru MNIST.
   Zwraca (X_train, y_train), (X_test, y_test) o wymiarach:
@@ -66,9 +66,12 @@ def load_data(path='/content/microarray-data/data/'):
       y[i] = 0
 
   # Przetasowanie elementów
-  indices = np.arange(1057)
-  X = tf.gather(X_reshaped, indices)
-  y = tf.gather(y, indices)
+  if shuffle:
+    indices = np.arange(patients)
+    X = tf.gather(X_reshaped, indices)
+    y = tf.gather(y, indices)
+  else:
+    X = X_reshaped
 
   # Podział na zbiór treningowy i testowy
   X_train = X[:900]
@@ -80,14 +83,14 @@ def load_data(path='/content/microarray-data/data/'):
 
 
 # Do użycia podczas trenowania GANów i sieci niewymagających etykiet
-def load_data_by_label(label, path='/content/microarray-data/data/'):
+def load_data_by_label(label, path='/content/microarray-data/data/', shuffle=False):
   """
   Zwraca (X_train, X_test) o wymiarach:
   (n, 32, 32)
   (n, 32, 32)
   Gdzie n jest liczbą przypadków oznaczonych daną etykietą.
   """
-  (X_train, y_train), (X_test, y_test) = load_data(path)
+  (X_train, y_train), (X_test, y_test) = load_data(path, shuffle=shuffle)
 
   assert X_train.shape[0] == y_train.shape[0]
   assert X_test.shape[0] == y_test.shape[0]
@@ -107,3 +110,51 @@ def load_data_by_label(label, path='/content/microarray-data/data/'):
   X_pos_test = np.array(X_pos_test)
 
   return X_pos_train, X_pos_test
+
+
+def convert_to_arff(images, labels, filename_r, filename_w, precision=3):
+  """
+  Konwersja obrazów z powrotem na plik .arff
+  Funkcja przyjmuje argumenty:
+  images o wymiarach (n, 32, 32)
+  labels o wymiarach (n,)
+  filename_r - nazwa pliku .arff, z którego pochodzą dane obrazów i etykiet
+  filename_w - nazwa pliku .arff, do którego zostaną zapisane dane z obrazów np. po augmentacji
+  precision - liczba cyfr po przecinku w danych, domyślnie 3
+
+  n jest liczbą pacjentów (wierszy) we wczytanym pliku .arff !!
+  """
+  assert images.shape[1] == images.shape[2] == 32
+  assert images.shape[0] == labels.shape[0]
+
+  data_length = images.shape[0]
+  genes = 1000
+
+  file_r = open(filename_r, 'r')
+  file_w = open(filename_w, 'w')
+
+  # Przepisanie pierwszej linijki do nowego pliku
+  lines = file_r.readlines()
+  file_w.write(lines[0] + '\n')
+
+  # Przepisanie artybutów
+  for line in lines:
+    if '@attribute' in line:
+      file_w.write(line)
+
+  file_w.write('\n@data \n')
+
+  for i in range(data_length):
+    img = np.array(images[i]).reshape(1024)[:1000]
+
+    for j in range(genes):
+      file_w.write(str(round(img[j], precision)) + ',')
+
+    if labels[i] == 1:
+      file_w.write("'yes' \n")
+    elif labels[i] == 0:
+      file_w.write("'no' \n")
+
+  file_r.close()
+  file_w.close()
+  return file_w
