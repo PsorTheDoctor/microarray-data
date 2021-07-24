@@ -90,7 +90,7 @@ def load_data_by_label(label, path='/content/microarray-data/data/', shuffle=Fal
   (n, 32, 32)
   Gdzie n jest liczbą przypadków oznaczonych daną etykietą.
   """
-  (X_train, y_train), (X_test, y_test) = load_data(path, shuffle=shuffle)
+  (X_train, y_train), (X_test, y_test) = load_data(path=path, shuffle=shuffle)
 
   assert X_train.shape[0] == y_train.shape[0]
   assert X_test.shape[0] == y_test.shape[0]
